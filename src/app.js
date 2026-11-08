@@ -1,17 +1,20 @@
 const express = require('express');
 
+const healthRoutes = require('./routes/healthRoutes');
+const authRoutes = require('./routes/authRoutes');
+const errorHandler = require('./middleware/errorMiddleware');
+// const authenticateToken = require('./middleware/authMiddleware');
+const gamesRoutes = require('./routes/gamesRoutes');
+
 const app = express();
 
-// Middlewares
+// Middlewares globales
 app.use(express.json());
 
-// Ruta de prueba
-app.get('/health', (req, res) => {
-    res.status(200).json({
-        status: 'ok',
-        message: 'GameVault API funcionando correctamente'
-    });
-});
+// Rutas
+app.use('/health', healthRoutes);
+app.use('/', authRoutes);
+app.use('/games', gamesRoutes);
 
 // Ruta no encontrada
 app.use((req, res) => {
@@ -19,5 +22,8 @@ app.use((req, res) => {
         message: 'Ruta no encontrada'
     });
 });
+
+// Manejo centralizado de errores
+app.use(errorHandler);
 
 module.exports = app;
