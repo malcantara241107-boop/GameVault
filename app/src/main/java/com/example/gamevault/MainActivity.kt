@@ -13,6 +13,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.gamevault.ui.theme.GameVaultTheme
 import com.example.gamevault.di.AppContainer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.gamevault.GameVaultApplication
+import com.example.gamevault.presentation.factories.AppViewModelFactory
+import com.example.gamevault.presentation.auth.viewmodels.AuthViewModel
+import com.example.gamevault.presentation.games.viewmodels.GameViewModel
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
+import com.example.gamevault.presentation.navigation.GameVaultNavigation
 
 class MainActivity : ComponentActivity() {
 
@@ -23,16 +35,35 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
+        val viewModelFactory = AppViewModelFactory(appContainer)
+
         // Aquí utilizaremos appContainer cuando conectemos
         // nuestros ViewModels y la navegación.
 
         setContent {
             GameVaultTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
+
+                val authViewModel: AuthViewModel = viewModel(
+                    factory = viewModelFactory
+                )
+
+                val gameViewModel: GameViewModel = viewModel(
+                    factory = viewModelFactory
+                )
+
+                val authState by authViewModel.uiState.collectAsStateWithLifecycle()
+                val gameState by gameViewModel.uiState.collectAsStateWithLifecycle()
+
+                Scaffold(
+                    modifier = Modifier.fillMaxSize()
+                ) { innerPadding ->
+
+                    GameVaultNavigation(
+                        authViewModel = authViewModel,
+                        gameViewModel = gameViewModel,
                         modifier = Modifier.padding(innerPadding)
                     )
+
                 }
             }
         }
