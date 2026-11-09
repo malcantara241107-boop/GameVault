@@ -17,4 +17,7 @@ interface AuthApi {
     suspend fun login(
         @Body request: LoginRequestDto
     ): AuthResponseDto
+
+    @POST("logout")
+    suspend fun logout()
 }

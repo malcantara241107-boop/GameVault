@@ -5,26 +5,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.gamevault.ui.theme.GameVaultTheme
-import com.example.gamevault.di.AppContainer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.getValue
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.gamevault.GameVaultApplication
-import com.example.gamevault.presentation.factories.AppViewModelFactory
+import com.example.gamevault.di.AppContainer
 import com.example.gamevault.presentation.auth.viewmodels.AuthViewModel
+import com.example.gamevault.presentation.factories.AppViewModelFactory
 import com.example.gamevault.presentation.games.viewmodels.GameViewModel
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
 import com.example.gamevault.presentation.navigation.GameVaultNavigation
+import com.example.gamevault.ui.theme.GameVaultTheme
 
 class MainActivity : ComponentActivity() {
 
@@ -37,12 +26,8 @@ class MainActivity : ComponentActivity() {
 
         val viewModelFactory = AppViewModelFactory(appContainer)
 
-        // Aquí utilizaremos appContainer cuando conectemos
-        // nuestros ViewModels y la navegación.
-
         setContent {
             GameVaultTheme {
-
                 val authViewModel: AuthViewModel = viewModel(
                     factory = viewModelFactory
                 )
@@ -51,37 +36,15 @@ class MainActivity : ComponentActivity() {
                     factory = viewModelFactory
                 )
 
-                val authState by authViewModel.uiState.collectAsStateWithLifecycle()
-                val gameState by gameViewModel.uiState.collectAsStateWithLifecycle()
-
-                Scaffold(
+                Surface(
                     modifier = Modifier.fillMaxSize()
-                ) { innerPadding ->
-
+                ) {
                     GameVaultNavigation(
                         authViewModel = authViewModel,
-                        gameViewModel = gameViewModel,
-                        modifier = Modifier.padding(innerPadding)
+                        gameViewModel = gameViewModel
                     )
-
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    GameVaultTheme {
-        Greeting("Android")
     }
 }

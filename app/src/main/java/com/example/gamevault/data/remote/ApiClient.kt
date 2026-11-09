@@ -4,21 +4,26 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import java.util.concurrent.TimeUnit
 
 class ApiClient(
+    baseUrl: String = NetworkConfig.BASE_URL,
     tokenProvider: () -> String?
 ) {
 
     private val contentType = "application/json".toMediaType()
 
-    private val okHttpClient = OkHttpClient.Builder()
+    val okHttpClient: OkHttpClient = OkHttpClient.Builder()
         .addInterceptor(
             AuthInterceptor(tokenProvider)
         )
+        .connectTimeout(15, TimeUnit.SECONDS)
+        .readTimeout(15, TimeUnit.SECONDS)
+        .writeTimeout(15, TimeUnit.SECONDS)
         .build()
 
-    private val retrofit = Retrofit.Builder()
-        .baseUrl("https://example.com/")
+    val retrofit: Retrofit = Retrofit.Builder()
+        .baseUrl(baseUrl)
         .client(okHttpClient)
         .addConverterFactory(
             NetworkConfig.json.asConverterFactory(contentType)

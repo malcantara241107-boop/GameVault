@@ -6,6 +6,16 @@ import com.example.gamevault.domain.model.Videojuego
 import com.example.gamevault.domain.model.VideojuegoDraft
 import java.time.LocalDate
 
+private fun parseLocalDateSafely(dateStr: String?): LocalDate? {
+    if (dateStr.isNullOrBlank()) return null
+    return try {
+        val cleanDate = if (dateStr.length >= 10) dateStr.substring(0, 10) else dateStr
+        LocalDate.parse(cleanDate)
+    } catch (_: Exception) {
+        null
+    }
+}
+
 // Convierte un DTO recibido desde la API en un modelo de dominio.
 fun VideojuegoDto.toDomain(): Videojuego {
     return Videojuego(
@@ -17,13 +27,9 @@ fun VideojuegoDto.toDomain(): Videojuego {
         genre = genre,
         releaseYear = releaseYear,
         isOwned = isOwned,
-        obtainedDate = obtainedDate?.let {
-            LocalDate.parse(it)
-        },
+        obtainedDate = parseLocalDateSafely(obtainedDate),
         isCompleted = isCompleted,
-        completedDate = completedDate?.let {
-            LocalDate.parse(it)
-        },
+        completedDate = parseLocalDateSafely(completedDate),
         rating = rating
     )
 }
