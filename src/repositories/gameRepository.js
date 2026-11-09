@@ -191,6 +191,13 @@ const remove = async (gameId, userId) => {
 const groupGames = (rows) => {
     const gamesMap = new Map();
 
+    const formatDate = (val) => {
+        if (!val) return null;
+        if (typeof val === 'string') return val.substring(0, 10);
+        if (val instanceof Date) return val.toISOString().substring(0, 10);
+        return String(val).substring(0, 10);
+    };
+
     for (const row of rows) {
         if (!gamesMap.has(row.id)) {
             gamesMap.set(row.id, {
@@ -202,10 +209,10 @@ const groupGames = (rows) => {
                 genre: row.genre,
                 release_year: row.release_year,
                 is_owned: Boolean(row.is_owned),
-                obtained_date: row.obtained_date,
+                obtained_date: formatDate(row.obtained_date),
                 is_completed: Boolean(row.is_completed),
-                completed_date: row.completed_date,
-                rating: row.rating,
+                completed_date: formatDate(row.completed_date),
+                rating: row.rating !== null && row.rating !== undefined ? Number(row.rating) : null,
                 created_at: row.created_at,
                 updated_at: row.updated_at,
                 platforms: []

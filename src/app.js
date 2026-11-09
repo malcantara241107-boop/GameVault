@@ -3,10 +3,20 @@ const express = require('express');
 const healthRoutes = require('./routes/healthRoutes');
 const authRoutes = require('./routes/authRoutes');
 const errorHandler = require('./middleware/errorMiddleware');
-// const authenticateToken = require('./middleware/authMiddleware');
 const gamesRoutes = require('./routes/gamesRoutes');
 
 const app = express();
+
+// Soporte CORS
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(200);
+    }
+    next();
+});
 
 // Middlewares globales
 app.use(express.json());

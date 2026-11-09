@@ -11,7 +11,9 @@ const pool = mysql.createPool({
 
     waitForConnections: true,
     connectionLimit: 10,
-    queueLimit: 0
+    queueLimit: 0,
+    decimalNumbers: true,
+    dateStrings: true
 });
 
 module.exports = pool;
